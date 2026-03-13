@@ -1,0 +1,28 @@
+services:
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./services/backend
+    ports:
+      - "8000:8000"
+    environment:
+      - CCC_MONGO_URL=mongodb://mongodb:27017
+      - CCC_MONGO_DB=ccc_dashboard
+      - CCC_ALLOWED_ORIGINS=["http://localhost:3000","http://localhost"]
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: ./services/frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
